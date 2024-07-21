@@ -7,9 +7,9 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+            background-color: #f0f2f5;
             margin: 0;
-            padding: 20px;
+            padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -17,50 +17,76 @@
         }
         .container {
             background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
         }
         h1 {
             margin-bottom: 20px;
-            text-align: center;
+            font-size: 24px;
+            color: #333;
         }
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
         label {
             display: block;
-            margin-bottom: 5px;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #555;
         }
-        input {
+        input[type="text"], select {
             width: calc(100% - 22px);
-            padding: 10px;
+            padding: 12px;
             border: 1px solid #ccc;
-            border-radius: 4px;
+            border-radius: 6px;
+            font-size: 16px;
+            color: #333;
+            box-sizing: border-box;
         }
         button {
             background-color: #007BFF;
             color: white;
             border: none;
-            padding: 10px 15px;
-            border-radius: 4px;
+            padding: 12px 20px;
+            border-radius: 6px;
             cursor: pointer;
+            font-size: 16px;
+            font-weight:bold;
         }
         button:hover {
             background-color: #0056b3;
         }
         .result {
             margin-top: 20px;
-            padding: 10px;
+            padding: 15px;
             background: #f9f9f9;
             border: 1px solid #ddd;
-            border-radius: 4px;
+            border-radius: 6px;
+            color: #333;
+            font-size: 16px;
         }
-        .form-group select {
-            width: calc(100% - 22px);
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
+            h1 {
+                font-size: 20px;
+            }
+            input[type="text"], select {
+                font-size: 14px;
+            }
+            button {
+                font-size: 14px;
+                padding: 10px 16px;
+            }
+            .result {
+                font-size: 14px;
+            }
         }
     </style>
 </head>
@@ -75,12 +101,8 @@
             </select>
         </div>
         <div class="form-group">
-            <label for="number1">Enter First Number:</label>
-            <input type="number" id="number1" required>
-        </div>
-        <div class="form-group">
-            <label for="number2">Enter Second Number:</label>
-            <input type="number" id="number2" required>
+            <label for="numbers">Enter Numbers (separated by commas):</label>
+            <input type="text" id="numbers" placeholder="e.g., 12, 15, 20" required>
         </div>
         <button onclick="calculate()">Calculate</button>
         <div class="result" id="result">
@@ -100,23 +122,28 @@
         }
 
         function calculate() {
-            const num1 = parseInt(document.getElementById('number1').value);
-            const num2 = parseInt(document.getElementById('number2').value);
-            const operation = document.getElementById('operation').value;
+            const numbersString = document.getElementById('numbers').value;
+            const numbers = numbersString.split(',').map(num => parseInt(num.trim()));
 
-            if (isNaN(num1) || isNaN(num2) || num1 <= 0 || num2 <= 0) {
-                document.getElementById('result').innerHTML = 'Please enter valid positive integers.';
+            if (numbers.some(isNaN) || numbers.length < 2 || numbers.some(num => num <= 0)) {
+                document.getElementById('result').innerHTML = 'Please enter valid positive integers, separated by commas.';
                 return;
             }
 
+            const operation = document.getElementById('operation').value;
             let result = '';
+            
             if (operation === 'lcm') {
-                result = `LCM: ${lcm(num1, num2)}`;
+                // Calculate LCM of multiple numbers
+                const lcmResult = numbers.reduce((acc, num) => lcm(acc, num));
+                result = `LCM: ${lcmResult}`;
             } else if (operation === 'hcf') {
-                result = `HCF (GCD): ${gcd(num1, num2)}`;
+                // Calculate HCF of multiple numbers
+                const hcfResult = numbers.reduce((acc, num) => gcd(acc, num));
+                result = `HCF (GCD): ${hcfResult}`;
             }
 
-            document.getElementById('result').innerHTML = `<strong>Results:</strong><br>${result}`;
+            document.getElementById('result').innerHTML = `<strong>Results:</strong><br><br>${result}`;
         }
     </script>
 </body>
